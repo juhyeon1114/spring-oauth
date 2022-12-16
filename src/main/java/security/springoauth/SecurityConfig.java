@@ -11,6 +11,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.io.IOException;
 
@@ -59,18 +62,40 @@ import java.io.IOException;
 //    }
 //}
 
-/**
- * Http Basic 챕터
- */
 @Configuration
 @Slf4j
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Throwable {
-        httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
+        /**
+         * Http Basic 챕터
+         */
+//        httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
 //        httpSecurity.httpBasic();
-        httpSecurity.httpBasic().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+//        httpSecurity.httpBasic().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
 //        httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        /**
+         * CORS 설정
+         */
+//        httpSecurity.cors().configurationSource(corsConfigurationSource());
+
         return httpSecurity.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.addAllowedOrigin("*");
+        configuration.addAllowedOrigin("http://localhost:8081");
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }
